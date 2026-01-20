@@ -11,7 +11,7 @@ from core.options import config_defaults
 from texture import Converter, str2bool
 
 app = FastAPI()
-router = APIRouter(prefix="/meshAPI/hunyuan")
+router = APIRouter(prefix="/meshAPI/texture")
 cli = typer.Typer()
 
 
