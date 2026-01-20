@@ -3,7 +3,7 @@ import shutil
 import tempfile
 
 import typer
-from fastapi import FastAPI, File, Form, UploadFile
+from fastapi import FastAPI, File, Form, UploadFile, APIRouter
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTask
 
@@ -11,6 +11,7 @@ from core.options import config_defaults
 from texture import Converter, str2bool
 
 app = FastAPI()
+router = APIRouter(prefix="/meshAPI/hunyuan")
 cli = typer.Typer()
 
 
@@ -32,7 +33,7 @@ async def load_model():
     converter.load_ckpt(config.ckpt_path)
 
 
-@app.post("/texturize")
+@router.post("/texturize")
 async def texturize(mesh: UploadFile = File(...), prompt: str = Form(...)):
     # Create a temporary directory for processing
     temp_dir = tempfile.TemporaryDirectory().name
@@ -74,6 +75,7 @@ def run(ckpt_path: str = typer.Option(..., help="Path to the model checkpoint"))
 
     uvicorn.run(app, host="0.0.0.0", port=8001)
 
+app.include_router(router)
 
 if __name__ == "__main__":
     cli()
